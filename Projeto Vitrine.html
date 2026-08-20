@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garimpo — tudo que tem na loja hoje</title>
+<meta name="description" content="Vitrine do estoque real do outlet: veja todas as peças disponíveis, tamanhos que ainda existem e preço remarcado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400..700&family=Martian+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#F1F1EE; --tinta:#14161A; --ultra:#1F3BE0; --fluo:#FF3B00;
+  --fita:#D7D4CA; --papel-2:#E7E6E0; --apagado:#6B6E76;
+  --display:'Archivo','Arial Black',sans-serif;
+  --corpo:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'Martian Mono','SFMono-Regular',Consolas,monospace;
+  --max:1280px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--corpo);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+svg{display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 22px}
+:focus-visible{outline:3px solid var(--ultra);outline-offset:2px}
+.display{font-family:var(--display);font-variation-settings:'wdth' 118,'wght' 800;line-height:.92;letter-spacing:-.02em;text-transform:uppercase;margin:0}
+.mono{font-family:var(--mono)}
+
+/* header */
+.topo{position:sticky;top:0;z-index:60;background:var(--papel);border-bottom:1.5px solid var(--tinta)}
+.topo-in{display:flex;align-items:center;gap:22px;height:64px}
+.marca{font-family:var(--display);font-variation-settings:'wdth' 112,'wght' 900;font-size:22px;letter-spacing:-.03em;text-transform:uppercase;text-decoration:none;display:flex;align-items:baseline;gap:7px}
+.marca span{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ultra);font-weight:600}
+.topo-zap{margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:11px 18px;border:1.5px solid var(--tinta);background:var(--tinta);color:var(--papel);transition:background .15s,color .15s,transform .15s}
+.btn:hover{background:var(--ultra);border-color:var(--ultra);transform:translateY(-2px)}
+.btn--vazio{background:transparent;color:var(--tinta)}
+.btn--vazio:hover{background:var(--tinta);color:var(--papel);border-color:var(--tinta)}
+
+/* abertura */
+.abre{padding:44px 0 34px;max-width:760px}
+.abre h1{font-size:clamp(38px,6vw,74px)}
+.abre h1 em{font-style:normal;color:var(--ultra);font-variation-settings:'wdth' 74,'wght' 900}
+.abre p{margin:16px 0 0;max-width:48ch;color:#3A3D45}
+
+/* faixa */
+.faixa{background:var(--ultra);color:#fff;overflow:hidden;padding:11px 0;border-block:1.5px solid var(--tinta)}
+.faixa-tira{display:flex;width:max-content;animation:desliza 36s linear infinite}
+.faixa-tira p{margin:0;padding-right:44px;white-space:nowrap;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+@keyframes desliza{to{transform:translateX(-50%)}}
+
+/* filtros */
+.filtros{position:sticky;top:64px;z-index:50;background:var(--papel);border-bottom:1.5px solid var(--tinta)}
+.filtros-in{padding:14px 0 12px;display:flex;flex-direction:column;gap:11px}
+.trilha{display:flex;align-items:center;gap:9px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.trilha::-webkit-scrollbar{display:none}
+.rotulo{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--apagado);flex:none;width:66px}
+.chip{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;background:transparent;border:1.3px solid var(--fita);padding:7px 13px;white-space:nowrap;flex:none;transition:border-color .15s,background .15s,color .15s}
+.chip:hover{border-color:var(--tinta)}
+.chip[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:var(--papel)}
+.chip--tam{min-width:44px;text-align:center;padding:7px 9px}
+.linha-fim{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:2px}
+.busca{flex:1;min-width:180px;display:flex;align-items:center;gap:9px;border:1.3px solid var(--fita);padding:8px 12px;background:var(--papel)}
+.busca:focus-within{border-color:var(--tinta)}
+.busca input{border:0;background:transparent;outline:0;width:100%;font-family:var(--mono);font-size:12px;letter-spacing:.02em}
+.busca input::placeholder{color:#9A9CA2;text-transform:uppercase;font-size:10.5px;letter-spacing:.1em}
+.ordem{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1.3px solid var(--fita);background:var(--papel);padding:9px 11px}
+.limpar{background:none;border:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;text-decoration:underline;color:var(--apagado);padding:4px}
+.limpar:hover{color:var(--fluo)}
+
+/* resultado */
+.resumo{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:26px 0 20px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--apagado)}
+.resumo b{color:var(--tinta);font-weight:700}
+
+/* grade */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:20px;padding-bottom:70px}
+.peca{position:relative;background:var(--papel);border:1.5px solid var(--tinta);padding:24px 16px 16px;clip-path:polygon(0 28px,28px 0,100% 0,100% 100%,0 100%);transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s}
+.peca:hover{transform:rotate(-1.2deg) translateY(-5px);box-shadow:6px 8px 0 var(--ultra)}
+.peca-furo{position:absolute;top:20px;left:20px;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--tinta);background:var(--papel-2)}
+.peca-selo{position:absolute;top:12px;right:12px;background:var(--fluo);color:var(--tinta);font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 6px}
+.peca-selo--novo{background:var(--ultra);color:#fff}
+.peca-arte{background:var(--papel-2);margin:12px 0 13px;padding:12px 0;border:1px solid var(--fita)}
+.peca-arte svg{width:100%;height:104px;color:var(--ultra)}
+.peca-cat{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--apagado);margin:0}
+.peca h3{font-size:15.5px;margin:5px 0 11px;line-height:1.25;font-weight:600}
+.precos{display:flex;align-items:baseline;gap:8px;border-top:1px dashed var(--fita);padding-top:11px}
+.de{font-family:var(--mono);font-size:11px;color:#8A8C93;text-decoration:line-through}
+.por{font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:-.04em;color:var(--fluo)}
+.corte{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;color:var(--tinta);border:1.2px solid var(--tinta);padding:2px 5px;margin-left:auto}
+.grade-tam{display:flex;gap:4px;margin-top:12px;flex-wrap:wrap}
+.tam{font-family:var(--mono);font-size:10px;font-weight:600;border:1.2px solid var(--tinta);padding:3px 6px;min-width:27px;text-align:center}
+.tam--fora{color:#A9ABB1;border-color:var(--fita);text-decoration:line-through}
+
+/* abrir peça + comprar */
+.peca-abrir{position:absolute;inset:0;z-index:1;background:none;border:0;padding:0;font-size:0;color:transparent}
+.peca-abrir:focus-visible{outline:3px solid var(--ultra);outline-offset:-4px}
+.peca .comprar{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:14px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;text-decoration:none;padding:10px;border:1.5px solid var(--tinta);background:var(--papel);color:var(--tinta);transition:background .15s,color .15s}
+.peca .comprar:hover{background:var(--fluo);border-color:var(--fluo)}
+.peca:hover .peca-arte{background:#DEDCD4}
+.dica-abrir{position:relative;z-index:0;font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--apagado);margin:9px 0 0;text-align:center;opacity:0;transition:opacity .2s}
+.peca:hover .dica-abrir,.peca:focus-within .dica-abrir{opacity:1}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(20,22,26,.82)}
+.modal[open]{display:flex}
+.modal-cx{position:relative;background:var(--papel);border:1.5px solid var(--tinta);width:100%;max-width:760px;max-height:88vh;overflow-y:auto;clip-path:polygon(0 34px,34px 0,100% 0,100% 100%,0 100%);box-shadow:12px 14px 0 var(--ultra)}
+.modal-furo{position:absolute;top:25px;left:25px;width:12px;height:12px;border-radius:50%;border:1.5px solid var(--tinta);background:var(--papel-2)}
+.modal-fecha{position:absolute;top:14px;right:14px;z-index:3;background:var(--papel);border:1.5px solid var(--tinta);width:34px;height:34px;display:flex;align-items:center;justify-content:center;padding:0}
+.modal-fecha:hover{background:var(--fluo);border-color:var(--fluo)}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.modal-arte{background:var(--papel-2);border-right:1.5px solid var(--tinta);display:flex;align-items:center;justify-content:center;padding:40px 30px;min-height:330px}
+.modal-arte svg{width:100%;max-width:210px;height:auto;aspect-ratio:1;color:var(--ultra)}
+.modal-txt{padding:44px 32px 30px}
+.modal-cat{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--apagado);margin:0}
+.modal-txt h2{font-family:var(--display);font-variation-settings:'wdth' 100,'wght' 800;text-transform:uppercase;letter-spacing:-.02em;line-height:1;font-size:29px;margin:9px 0 14px}
+.modal-desc{font-size:15px;color:#3A3D45;margin:0 0 20px}
+.modal-precos{display:flex;align-items:baseline;gap:10px;border-top:1px dashed var(--fita);border-bottom:1px dashed var(--fita);padding:14px 0}
+.modal-precos .por{font-size:26px}
+.modal-bloco{margin:18px 0 0}
+.modal-bloco .rot{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--apagado);display:block;margin-bottom:9px}
+.modal .tam{font-size:11.5px;padding:5px 9px;min-width:33px}
+.modal-nota{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--apagado);margin:10px 0 0;line-height:1.6}
+.modal-cta{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:24px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:15px;border:1.5px solid var(--tinta);background:var(--tinta);color:var(--papel);transition:background .15s,border-color .15s,color .15s}
+.modal-cta:hover{background:var(--fluo);border-color:var(--fluo);color:var(--tinta)}
+@media (max-width:700px){
+  .modal{padding:12px}
+  .modal-grid{grid-template-columns:1fr}
+  .modal-arte{border-right:0;border-bottom:1.5px solid var(--tinta);min-height:0;padding:44px 30px 26px}
+  .modal-arte svg{max-width:150px}
+  .modal-txt{padding:26px 22px 26px}
+}
+
+/* vazio */
+.vazio{border:1.5px dashed var(--fita);padding:56px 30px;text-align:center;margin-bottom:70px}
+.vazio h3{font-family:var(--display);font-variation-settings:'wdth' 105,'wght' 800;text-transform:uppercase;font-size:26px;margin:0 0 10px;letter-spacing:-.02em}
+.vazio p{margin:0 auto 22px;max-width:38ch;color:#3A3D45}
+
+/* loja */
+.loja{border-top:1.5px solid var(--tinta);background:var(--papel-2)}
+.loja-in{display:grid;grid-template-columns:1fr 1fr;gap:46px;padding:66px 0}
+.loja h2{font-size:clamp(30px,4vw,48px)}
+.loja p.intro{color:#3A3D45;max-width:44ch}
+.linha-info{display:flex;gap:14px;padding:14px 0;border-top:1px dashed var(--fita)}
+.linha-info dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--apagado);width:92px;flex:none;padding-top:4px}
+.linha-info dd{margin:0;font-size:15.5px}
+.passos{align-self:center}
+.passo{display:flex;gap:16px;padding:16px 0;border-top:1px dashed var(--fita)}
+.passo:first-child{border-top:0}
+.passo-n{font-family:var(--display);font-variation-settings:'wdth' 125,'wght' 900;font-size:26px;color:var(--ultra);line-height:1;flex:none;width:36px}
+.passo h3{margin:0 0 3px;font-size:16px;font-weight:600}
+.passo p{margin:0;font-size:14.5px;color:#3A3D45}
+
+/* rodapé */
+.rodape{padding:40px 0 34px;border-top:1.5px solid var(--tinta)}
+.rodape-in{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:center}
+.rodape a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.rodape a:hover{color:var(--ultra)}
+.miudo{font-family:var(--mono);font-size:10px;color:#8A8C93;letter-spacing:.04em;margin-top:24px;line-height:1.75}
+
+@media (max-width:900px){
+  .loja-in{grid-template-columns:1fr;gap:34px;padding:52px 0}
+}
+@media (max-width:620px){
+  .grade{grid-template-columns:repeat(2,1fr);gap:13px}
+  .peca{padding:22px 12px 14px}
+  .peca h3{font-size:14px}
+  .peca-arte svg{height:82px}
+  .rotulo{display:none}
+  .filtros{top:64px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs>
+ <symbol id="i-camiseta" viewBox="0 0 100 100"><path d="M31 17 17 26 11 45l14 5 2-6v39h46V44l2 6 14-5-6-19-14-9c-4 8-30 8-34 0Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M38 18c4 5 20 5 24 0" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-jeans" viewBox="0 0 100 100"><path d="M29 14h42l4 72H57L50 47l-7 39H25Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M29 26h42M50 14v20" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-jaqueta" viewBox="0 0 100 100"><path d="M33 16 18 25l-5 21 13 4v34h48V50l13-4-5-21-15-9" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M33 16 50 30l17-14M50 30v54M33 56h10M57 56h10" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/></symbol>
+ <symbol id="i-vestido" viewBox="0 0 100 100"><path d="M35 15l-6 11 6 9-13 49h56L65 35l6-9-6-11c-5 8-25 8-30 0Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M35 44h30" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-tenis" viewBox="0 0 100 100"><path d="M13 68c0-9 8-13 16-16l17-11 8 9 17 5c11 3 16 7 16 15v6H13Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M13 76h74M46 41l7 8M38 47l7 8M54 55l7 8" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-bone" viewBox="0 0 100 100"><path d="M20 61c0-24 60-24 60 0Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M20 61h63c8 0 11 6 9 10H20Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M50 37v24" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-moletom" viewBox="0 0 100 100"><path d="M33 20 18 28l-6 20 14 5v33h48V53l14-5-6-20-15-8" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M33 20c0 10 34 10 34 0-4-9-30-9-34 0ZM36 60h28v14H36Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/></symbol>
+ <symbol id="i-shorts" viewBox="0 0 100 100"><path d="M28 20h44l4 48H58l-8-24-8 24H24Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M28 31h44" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-saia" viewBox="0 0 100 100"><path d="M31 24h38l11 54H20Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M31 34h38" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-camisa" viewBox="0 0 100 100"><path d="M34 16 18 25l-6 20 13 5v34h50V50l13-5-6-20-16-9" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="m34 16 16 12 16-12M50 28v56" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/></symbol>
+ <symbol id="i-sandalia" viewBox="0 0 100 100"><path d="M28 78c-6 0-9-5-9-11 0-13 4-22 4-33 0-6 4-10 10-10s10 4 10 10c0 11-4 20-4 33 0 6-5 11-11 11Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M23 40c8 8 18 8 26 0M22 52c9 8 19 8 27 0" fill="none" stroke="currentColor" stroke-width="3.4"/><path d="M60 78c8-4 20-12 20-24" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+ <symbol id="i-bolsa" viewBox="0 0 100 100"><path d="M20 38h60l-5 44H25Z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/><path d="M35 38V28c0-8 7-12 15-12s15 4 15 12v10" fill="none" stroke="currentColor" stroke-width="3.4"/></symbol>
+</defs></svg>
+
+<header class="topo">
+  <div class="wrap topo-in">
+    <a href="#" class="marca">Garimpo <span>Outlet</span></a>
+    <a class="btn topo-zap" href="https://wa.me/5522999999999">Chamar no zap</a>
+  </div>
+</header>
+
+<div class="wrap abre">
+  <div>
+    <p class="mono" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ultra);margin:0 0 16px">Rio das Ostras/RJ</p>
+    <h1 class="display">Tudo que tem<br>na loja, <em>agora</em></h1>
+    <p>Esta é a vitrine inteira — não é uma seleção. Cada peça aqui existe fisicamente na arara, com os tamanhos que ainda restam. Some da página no minuto em que sai da loja.</p>
+  </div>
+</div>
+
+<div class="faixa">
+  <div class="faixa-tira">
+    <p>Peça única ✱ Tamanho riscado já saiu ✱ Até 70% off ✱ 3x sem juros ✱ Retirada na loja ou entrega na região ✱&nbsp;</p>
+    <p>Peça única ✱ Tamanho riscado já saiu ✱ Até 70% off ✱ 3x sem juros ✱ Retirada na loja ou entrega na região ✱&nbsp;</p>
+  </div>
+</div>
+
+<section class="filtros">
+  <div class="wrap filtros-in">
+    <div class="trilha" id="linhaCat" role="group" aria-label="Filtrar por categoria">
+      <span class="rotulo">Categoria</span>
+    </div>
+    <div class="trilha" id="linhaTam" role="group" aria-label="Filtrar por tamanho">
+      <span class="rotulo">Tamanho</span>
+    </div>
+    <div class="linha-fim">
+      <label class="busca">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="m13.5 13.5 4 4" stroke="currentColor" stroke-width="2"/></svg>
+        <input id="busca" type="search" placeholder="Buscar peça" aria-label="Buscar peça">
+      </label>
+      <select class="ordem" id="ordem" aria-label="Ordenar peças">
+        <option value="desconto">Maior desconto</option>
+        <option value="novo">Chegou agora</option>
+        <option value="barato">Menor preço</option>
+        <option value="caro">Maior preço</option>
+      </select>
+      <button class="limpar" id="limpar" type="button">Limpar filtros</button>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="resumo">
+    <span id="contagem">Mostrando 30 peças</span>
+    <span id="recorte">Vitrine completa</span>
+  </div>
+  <div class="grade" id="grade"></div>
+  <div class="vazio" id="vazio" hidden>
+    <h3>Nada com esses filtros</h3>
+    <p>O estoque gira rápido e a grade some junto. Limpe os filtros para ver a arara inteira, ou pergunte no zap — às vezes chega peça antes de subir aqui.</p>
+    <button class="btn btn--vazio" id="limpar2" type="button">Ver a arara inteira</button>
+  </div>
+</main>
+
+<section class="loja" id="loja">
+  <div class="wrap loja-in">
+    <div>
+      <h2 class="display">A loja</h2>
+      <p class="intro">A Garimpo nasceu em 2019 comprando ponta de estoque direto de fábricas e representantes do Rio. É tudo peça original de primeira mão: o preço cai porque a grade vem quebrada, não porque a roupa é de segunda linha.</p>
+      <dl style="margin:26px 0 0">
+        <div class="linha-info"><dt>Endereço</dt><dd>Rua das Palmeiras, 210 — Centro<br>Rio das Ostras, RJ</dd></div>
+        <div class="linha-info"><dt>Horário</dt><dd>Seg a sex, 9h às 18h · Sábado, 9h às 14h</dd></div>
+        <div class="linha-info"><dt>Contato</dt><dd>(22) 99999-9999 · @garimpo.outlet</dd></div>
+        <div class="linha-info"><dt>Pagamento</dt><dd>Pix, dinheiro ou cartão em até 3x sem juros</dd></div>
+        <div class="linha-info"><dt>Entrega</dt><dd>Mesmo dia em Rio das Ostras · até 48h nas cidades vizinhas</dd></div>
+        <div class="linha-info"><dt>Trocas</dt><dd>7 dias com a etiqueta · troca por outra peça ou crédito</dd></div>
+      </dl>
+      <div style="margin-top:26px"><a class="btn" href="https://wa.me/5522999999999">Falar com a loja</a></div>
+    </div>
+    <div class="passos">
+      <div class="passo"><div class="passo-n">01</div><div><h3>Toque em Comprar</h3><p>A conversa abre com a peça já escrita pra você.</p></div></div>
+      <div class="passo"><div class="passo-n">02</div><div><h3>A gente confirma</h3><p>Vemos se o tamanho ainda está na arara e separamos por 24 horas.</p></div></div>
+      <div class="passo"><div class="passo-n">03</div><div><h3>Retire ou receba</h3><p>Entrega no mesmo dia em Rio das Ostras e região.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+  <div class="modal-cx">
+    <span class="modal-furo"></span>
+    <button class="modal-fecha" id="modalFecha" type="button" aria-label="Fechar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <div class="modal-grid" id="modalCorpo"></div>
+  </div>
+</div>
+
+<footer class="rodape">
+  <div class="wrap rodape-in">
+    <a href="#" class="marca">Garimpo <span>Outlet</span></a>
+    <nav style="display:flex;gap:18px;flex-wrap:wrap">
+      <a href="#loja">A loja</a>
+      <a href="https://wa.me/5522999999999">WhatsApp</a>
+      <a href="#">Instagram</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <p class="miudo">Projeto fictício criado para portfólio. Marca, peças, preços e endereço são ilustrativos.<br>Garimpo Outlet · Trocas em até 7 dias mediante etiqueta.</p>
+  </div>
+</footer>
+
+<script>
+const acervo = [
+  {nome:'Oversized canelada off-white',cat:'Feminino',tipo:'Camiseta · algodão canelado',arte:'i-camiseta',de:129,por:59,tam:[['P',1],['M',0],['G',1],['GG',0]],novo:1,estado:'Novo com etiqueta',desc:'Malha canelada grossa, ombro caído e barra reta. Cai bem com calça de cintura alta.'},
+  {nome:'Wide leg lavagem escura',cat:'Feminino',tipo:'Calça · jeans pesado',arte:'i-jeans',de:259,por:119,tam:[['36',1],['38',1],['40',0],['42',1]],estado:'Novo com etiqueta',desc:'Jeans encorpado, cintura alta e perna larga do quadril até a barra. Não amassa fácil.'},
+  {nome:'Midi acinturado preto',cat:'Feminino',tipo:'Vestido · alfaiataria leve',arte:'i-vestido',de:289,por:129,tam:[['P',1],['M',1],['G',1],['GG',0]],estado:'Novo com etiqueta',desc:'Comprimento na canela, cintura marcada e fenda discreta atrás. Forrado.'},
+  {nome:'Saia midi plissada verde',cat:'Feminino',tipo:'Saia · tecido plano',arte:'i-saia',de:189,por:79,tam:[['P',0],['M',1],['G',1]],estado:'Mostruário',desc:'Prega marcada, elástico nas costas e caimento fluido. Verde-musgo fechado.'},
+  {nome:'Camisa de linho areia',cat:'Feminino',tipo:'Camisa · linho misto',arte:'i-camisa',de:239,por:99,tam:[['P',1],['M',1],['G',0],['GG',1]],novo:1,estado:'Novo com etiqueta',desc:'Linho com algodão, mais leve que o linho puro e bem menos amassado.'},
+  {nome:'Cropped canelado preto',cat:'Feminino',tipo:'Blusa · malha canelada',arte:'i-camiseta',de:99,por:39,tam:[['P',1],['M',1],['G',0]],estado:'Novo com etiqueta',desc:'Alça média, barra na cintura e malha com boa elasticidade.'},
+  {nome:'Jaqueta jeans desbotada',cat:'Feminino',tipo:'Jaqueta · jeans claro',arte:'i-jaqueta',de:329,por:139,tam:[['P',0],['M',1],['G',1]],estado:'Mostruário',desc:'Modelagem solta, bolsos frontais e lavagem clara já desbotada de fábrica.'},
+  {nome:'Vestido chemise floral',cat:'Feminino',tipo:'Vestido · viscose',arte:'i-vestido',de:249,por:109,tam:[['P',1],['M',0],['G',1],['GG',1]],estado:'Novo com etiqueta',desc:'Botões na frente inteira, cinto de amarrar e viscose fresca para o calor.'},
+  {nome:'Calça alfaiataria bege',cat:'Feminino',tipo:'Calça · alfaiataria',arte:'i-jeans',de:279,por:119,tam:[['36',0],['38',1],['40',1],['42',0]],estado:'Novo com etiqueta',desc:'Pregas na frente, bolso embutido e barra reta. Serve para trabalho e saída.'},
+  {nome:'Blazer alongado grafite',cat:'Feminino',tipo:'Casaco · alfaiataria',arte:'i-jaqueta',de:429,por:189,tam:[['P',1],['M',1],['G',0]],novo:1,estado:'Novo com etiqueta',desc:'Comprimento até o meio da coxa, ombro estruturado e forro inteiro.'},
+
+  {nome:'Corta-vento com capuz embutido',cat:'Masculino',tipo:'Jaqueta · nylon',arte:'i-jaqueta',de:349,por:149,tam:[['P',0],['M',0],['G',1],['GG',1]],estado:'Mostruário',desc:'Nylon impermeável, capuz que guarda na gola e punho com elástico.'},
+  {nome:'Capuz com bolso canguru',cat:'Masculino',tipo:'Moletom · flanelado',arte:'i-moletom',de:219,por:99,tam:[['P',1],['M',1],['G',0],['GG',1]],estado:'Novo com etiqueta',desc:'Flanelado por dentro, bem quente. Modelagem regular, não é oversized.'},
+  {nome:'Sarja cargo areia',cat:'Masculino',tipo:'Shorts · sarja',arte:'i-shorts',de:149,por:69,tam:[['38',0],['40',1],['42',0],['44',1]],estado:'Novo com etiqueta',desc:'Bolsos laterais grandes, cós com cordão e barra acima do joelho.'},
+  {nome:'Camiseta pesada gola alta',cat:'Masculino',tipo:'Camiseta · algodão 180g',arte:'i-camiseta',de:119,por:49,tam:[['P',1],['M',1],['G',1],['GG',1]],novo:1,estado:'Novo com etiqueta',desc:'Algodão 180g que não fica transparente, com gola reforçada.'},
+  {nome:'Jeans reto lavagem média',cat:'Masculino',tipo:'Calça · jeans',arte:'i-jeans',de:269,por:119,tam:[['40',1],['42',1],['44',0],['46',1]],estado:'Novo com etiqueta',desc:'Corte reto do joelho para baixo, sem elastano. Lavagem média sem puídos.'},
+  {nome:'Camisa xadrez flanelada',cat:'Masculino',tipo:'Camisa · flanela',arte:'i-camisa',de:229,por:89,tam:[['M',1],['G',1],['GG',0]],estado:'Mostruário',desc:'Flanela macia, xadrez em tons de vinho. Dá para usar aberta sobre camiseta.'},
+  {nome:'Moletom careca cinza mescla',cat:'Masculino',tipo:'Moletom · sem capuz',arte:'i-moletom',de:179,por:79,tam:[['P',0],['M',1],['G',1],['GG',1]],estado:'Novo com etiqueta',desc:'Gola redonda com ribana, punho e barra ajustados. Peça básica de inverno.'},
+  {nome:'Bermuda de sarja marinho',cat:'Masculino',tipo:'Shorts · sarja',arte:'i-shorts',de:139,por:59,tam:[['38',1],['40',1],['42',1]],estado:'Novo com etiqueta',desc:'Sarja lisa com leve elastano, passante para cinto e barra na altura do joelho.'},
+  {nome:'Camisa social slim branca',cat:'Masculino',tipo:'Camisa · algodão fio 60',arte:'i-camisa',de:259,por:99,tam:[['M',0],['G',1],['GG',1]],estado:'Novo com etiqueta',desc:'Fio 60 de toque macio, colarinho firme e modelagem justa ao corpo.'},
+  {nome:'Jaqueta puffer preta',cat:'Masculino',tipo:'Jaqueta · matelassê',arte:'i-jaqueta',de:499,por:199,tam:[['M',1],['G',1],['GG',0]],novo:1,estado:'Novo com etiqueta',desc:'Enchimento leve, zíper duplo e bolsos com fecho. Aguenta frio de serra.'},
+
+  {nome:'Conjunto moletom infantil',cat:'Infantil',tipo:'Conjunto · moletom',arte:'i-moletom',de:169,por:69,tam:[['4',1],['6',1],['8',0],['10',1]],estado:'Novo com etiqueta',desc:'Blusa e calça no mesmo tom, com punho ajustado. Vai à máquina sem encolher.'},
+  {nome:'Vestido de malha listrado',cat:'Infantil',tipo:'Vestido · malha',arte:'i-vestido',de:129,por:49,tam:[['2',1],['4',0],['6',1]],estado:'Novo com etiqueta',desc:'Malha de algodão macia, sem etiqueta interna que incomoda.'},
+  {nome:'Camiseta estampada infantil',cat:'Infantil',tipo:'Camiseta · algodão',arte:'i-camiseta',de:79,por:29,tam:[['4',1],['6',1],['8',1],['10',0]],novo:1,estado:'Novo com etiqueta',desc:'Estampa emborrachada que não racha na lavagem. Gola com ribana.'},
+  {nome:'Bermuda jeans infantil',cat:'Infantil',tipo:'Shorts · jeans',arte:'i-shorts',de:99,por:39,tam:[['6',0],['8',1],['10',1]],estado:'Mostruário',desc:'Cós com elástico interno regulável e bolsos reais nos dois lados.'},
+  {nome:'Jaqueta corta-vento kids',cat:'Infantil',tipo:'Jaqueta · nylon',arte:'i-jaqueta',de:189,por:79,tam:[['4',1],['6',1],['8',1]],estado:'Novo com etiqueta',desc:'Leve, com capuz e forro de malha. Boa para vento de fim de tarde.'},
+
+  {nome:'Tênis chunky branco',cat:'Calçados',tipo:'Tênis · solado alto',arte:'i-tenis',de:399,por:189,tam:[['37',0],['38',1],['39',1],['41',1]],estado:'Novo na caixa',desc:'Solado alto e macio, cabedal em couro sintético fácil de limpar.'},
+  {nome:'Sandália de tiras caramelo',cat:'Calçados',tipo:'Sandália · couro',arte:'i-sandalia',de:229,por:89,tam:[['35',1],['36',1],['37',0],['38',1]],estado:'Mostruário',desc:'Couro legítimo, salto bloco baixo e fivela no tornozelo. Confortável o dia todo.'},
+  {nome:'Tênis casual camurça',cat:'Calçados',tipo:'Tênis · camurça',arte:'i-tenis',de:349,por:149,tam:[['40',1],['41',0],['42',1],['43',1]],novo:1,estado:'Novo na caixa',desc:'Camurça marrom, solado de borracha fino e palmilha removível.'},
+
+  {nome:'Boné trucker azul',cat:'Acessórios',tipo:'Boné · aba curva',arte:'i-bone',de:89,por:39,tam:[['Único',1]],estado:'Novo com etiqueta',desc:'Frente em algodão e traseira em tela, com regulagem de encaixe.'},
+  {nome:'Bolsa tote de lona crua',cat:'Acessórios',tipo:'Bolsa · lona',arte:'i-bolsa',de:159,por:69,tam:[['Único',1]],estado:'Novo com etiqueta',desc:'Lona grossa que fica em pé sozinha, com bolso interno e alça reforçada.'}
+];
+
+const ZAP = '5522999999999';
+const linkZap = p => 'https://wa.me/' + ZAP + '?text=' +
+  encodeURIComponent('Oi! Vi a peça "' + p.nome + '" no site, por R$ ' + p.por + '. Ainda tem disponível?');
+
+const cats = ['Tudo','Feminino','Masculino','Infantil','Calçados','Acessórios'];
+let fCat = 'Tudo', fTam = null, fBusca = '', fOrdem = 'desconto';
+
+const el = id => document.getElementById(id);
+const grade = el('grade'), vazio = el('vazio');
+const desconto = p => Math.round((1 - p.por / p.de) * 100);
+
+function montaCategorias(){
+  const linha = el('linhaCat');
+  cats.forEach(c => {
+    const n = c === 'Tudo' ? acervo.length : acervo.filter(p => p.cat === c).length;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip';
+    b.textContent = c + ' · ' + n;
+    b.setAttribute('aria-pressed', c === fCat);
+    b.onclick = () => { fCat = c; fTam = null; montaTamanhos(); sincroniza(); };
+    b.dataset.cat = c;
+    linha.appendChild(b);
+  });
+}
+
+function montaTamanhos(){
+  const linha = el('linhaTam');
+  linha.querySelectorAll('.chip').forEach(c => c.remove());
+  const base = fCat === 'Tudo' ? acervo : acervo.filter(p => p.cat === fCat);
+  const vistos = [];
+  base.forEach(p => p.tam.forEach(([t]) => { if(!vistos.includes(t)) vistos.push(t); }));
+  vistos.sort((a,b) => {
+    const na = parseInt(a), nb = parseInt(b);
+    if(!isNaN(na) && !isNaN(nb)) return na - nb;
+    const ordem = ['P','M','G','GG','Único'];
+    return ordem.indexOf(a) - ordem.indexOf(b);
+  });
+  vistos.forEach(t => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip chip--tam';
+    b.textContent = t;
+    b.setAttribute('aria-pressed', t === fTam);
+    b.onclick = () => { fTam = (fTam === t ? null : t); sincroniza(); };
+    b.dataset.tam = t;
+    linha.appendChild(b);
+  });
+}
+
+function filtra(){
+  let lista = acervo.filter(p => {
+    if(fCat !== 'Tudo' && p.cat !== fCat) return false;
+    if(fTam && !p.tam.some(([t, ok]) => t === fTam && ok)) return false;
+    if(fBusca){
+      const alvo = (p.nome + ' ' + p.tipo + ' ' + p.cat).toLowerCase();
+      if(!alvo.includes(fBusca)) return false;
+    }
+    return true;
+  });
+  const ordens = {
+    desconto: (a,b) => desconto(b) - desconto(a),
+    barato:   (a,b) => a.por - b.por,
+    caro:     (a,b) => b.por - a.por,
+    novo:     (a,b) => (b.novo || 0) - (a.novo || 0) || desconto(b) - desconto(a)
+  };
+  return lista.sort(ordens[fOrdem]);
+}
+
+function cartao(p, i){
+  const restam = p.tam.filter(([,ok]) => ok).length;
+  let selo = '';
+  if(restam === 1 && p.tam.length > 1) selo = '<span class="peca-selo">Última peça</span>';
+  else if(p.novo) selo = '<span class="peca-selo peca-selo--novo">Chegou agora</span>';
+  const tams = p.tam.map(([t, ok]) =>
+    `<span class="tam${ok ? '' : ' tam--fora'}">${t}</span>`).join('');
+  return `<article class="peca">
+    <button class="peca-abrir" type="button" data-i="${i}">Ver ${p.nome} de perto</button>
+    <span class="peca-furo"></span>${selo}
+    <div class="peca-arte"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><use href="#${p.arte}"/></svg></div>
+    <p class="peca-cat">${p.tipo}</p>
+    <h3>${p.nome}</h3>
+    <div class="precos">
+      <span class="de">R$ ${p.de},00</span>
+      <span class="por">R$ ${p.por}</span>
+      <span class="corte">−${desconto(p)}%</span>
+    </div>
+    <div class="grade-tam">${tams}</div>
+    <a class="comprar" href="${linkZap(p)}" target="_blank" rel="noopener">Comprar</a>
+    <p class="dica-abrir">Clique para ver de perto</p>
+  </article>`;
+}
+
+/* ---- ver de perto ---- */
+const modal = el('modal'), modalCorpo = el('modalCorpo');
+let ultimoFoco = null;
+
+function abrePeca(p){
+  const tams = p.tam.map(([t, ok]) =>
+    `<span class="tam${ok ? '' : ' tam--fora'}">${t}</span>`).join('');
+  const sobrando = p.tam.filter(([,ok]) => ok).length;
+  modalCorpo.innerHTML = `
+    <div class="modal-arte"><svg viewBox="0 0 100 100"><use href="#${p.arte}"/></svg></div>
+    <div class="modal-txt">
+      <p class="modal-cat">${p.tipo}</p>
+      <h2 id="modalTitulo">${p.nome}</h2>
+      <p class="modal-desc">${p.desc}</p>
+      <div class="modal-precos">
+        <span class="de">R$ ${p.de},00</span>
+        <span class="por">R$ ${p.por}</span>
+        <span class="corte">−${desconto(p)}%</span>
+      </div>
+      <div class="modal-bloco">
+        <span class="rot">Tamanhos que ainda existem</span>
+        <div class="grade-tam">${tams}</div>
+        <p class="modal-nota">Riscado é tamanho que já saiu da loja.<br>
+        ${p.estado} · ${sobrando === 1 ? 'resta 1 peça' : 'restam ' + sobrando + ' peças'} · 3x sem juros</p>
+      </div>
+      <a class="modal-cta" href="${linkZap(p)}" target="_blank" rel="noopener">Comprar pelo WhatsApp</a>
+    </div>`;
+  modal.setAttribute('open', '');
+  document.body.style.overflow = 'hidden';
+  el('modalFecha').focus();
+}
+
+function fechaModal(){
+  modal.removeAttribute('open');
+  document.body.style.overflow = '';
+  if(ultimoFoco) ultimoFoco.focus();
+}
+
+grade.addEventListener('click', e => {
+  const alvo = e.target.closest('.peca-abrir');
+  if(!alvo) return;
+  ultimoFoco = alvo;
+  abrePeca(filtra()[+alvo.dataset.i]);
+});
+el('modalFecha').addEventListener('click', fechaModal);
+modal.addEventListener('click', e => { if(e.target === modal) fechaModal(); });
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && modal.hasAttribute('open')) fechaModal();
+});
+
+function sincroniza(){
+  document.querySelectorAll('#linhaCat .chip').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.cat === fCat));
+  document.querySelectorAll('#linhaTam .chip').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.tam === fTam));
+
+  const lista = filtra();
+  grade.innerHTML = lista.map((p, i) => cartao(p, i)).join('');
+  vazio.hidden = lista.length > 0;
+
+  el('contagem').innerHTML = lista.length
+    ? `Mostrando <b>${lista.length}</b> ${lista.length === 1 ? 'peça' : 'peças'} de ${acervo.length}`
+    : 'Nenhuma peça encontrada';
+
+  const partes = [];
+  if(fCat !== 'Tudo') partes.push(fCat);
+  if(fTam) partes.push('tamanho ' + fTam);
+  if(fBusca) partes.push('"' + fBusca + '"');
+  el('recorte').textContent = partes.length ? partes.join(' · ') : 'Vitrine completa';
+}
+
+function limpaTudo(){
+  fCat = 'Tudo'; fTam = null; fBusca = ''; fOrdem = 'desconto';
+  el('busca').value = ''; el('ordem').value = 'desconto';
+  montaTamanhos(); sincroniza();
+  document.querySelector('.filtros').scrollIntoView({block:'start'});
+}
+
+el('busca').addEventListener('input', e => { fBusca = e.target.value.trim().toLowerCase(); sincroniza(); });
+el('ordem').addEventListener('change', e => { fOrdem = e.target.value; sincroniza(); });
+el('limpar').addEventListener('click', limpaTudo);
+el('limpar2').addEventListener('click', limpaTudo);
+
+montaCategorias();
+montaTamanhos();
+sincroniza();
+</script>
+</body>
+</html>
